@@ -72,6 +72,9 @@ Nfc* nfc_alloc() {
     view_dispatcher_add_view(
         nfc->view_dispatcher, NfcViewTextInput, text_input_get_view(nfc->text_input));
 
+    // Text Input Mode
+    nfc->text_input_mode = 0;
+
     // Byte Input
     nfc->byte_input = byte_input_alloc();
     view_dispatcher_add_view(
