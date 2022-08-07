@@ -2,6 +2,8 @@
 
 enum SubmenuIndex {
     SubmenuIndexUnlock,
+    SubmenuIndexDataText,
+    SubmenuIndexDataTextSectors,
     SubmenuIndexSave,
     SubmenuIndexEmulate,
 };
@@ -25,6 +27,10 @@ void nfc_scene_mf_ultralight_menu_on_enter(void* context) {
             nfc_scene_mf_ultralight_menu_submenu_callback,
             nfc);
     }
+    submenu_add_item(
+        submenu, "Data", SubmenuIndexDataText, nfc_scene_mf_ultralight_menu_submenu_callback, nfc);
+    submenu_add_item(
+        submenu, "Data (Sectors)", SubmenuIndexDataTextSectors, nfc_scene_mf_ultralight_menu_submenu_callback, nfc);
     submenu_add_item(
         submenu, "Save", SubmenuIndexSave, nfc_scene_mf_ultralight_menu_submenu_callback, nfc);
     submenu_add_item(
@@ -55,6 +61,18 @@ bool nfc_scene_mf_ultralight_menu_on_event(void* context, SceneManagerEvent even
             consumed = true;
         } else if(event.event == SubmenuIndexUnlock) {
             scene_manager_next_scene(nfc->scene_manager, NfcSceneMfUltralightUnlockMenu);
+            consumed = true;
+        } else if(event.event == SubmenuIndexDataText) {
+            nfc->text_input_mode = 0;
+            scene_manager_set_scene_state(
+                nfc->scene_manager, NfcSceneMfUltralightMenu, SubmenuIndexDataText);
+            scene_manager_next_scene(nfc->scene_manager, NfcSceneMfData);
+            consumed = true;
+        } else if(event.event == SubmenuIndexDataTextSectors) {
+            nfc->text_input_mode = 1;
+            scene_manager_set_scene_state(
+                nfc->scene_manager, NfcSceneMfUltralightMenu, SubmenuIndexDataTextSectors);
+            scene_manager_next_scene(nfc->scene_manager, NfcSceneMfData);
             consumed = true;
         }
         scene_manager_set_scene_state(nfc->scene_manager, NfcSceneMfUltralightMenu, event.event);
